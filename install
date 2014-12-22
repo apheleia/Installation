@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# File cofigurations
+PACKAGES="tmux zsh vim curl"
+ZSH_ALIASES="$HOME/.zsh_aliases"
+
+# Find out which distro for installation
+if [ -f /etc/debian_version ]; then
+    printf "Debian found\n"
+    PACKAGE_MANAGER="sudo apt-get install"
+elif [ -f /etc/arch-release ]; then
+    printf "Arch found\n"
+    PACKAGE_MANAGER="sudo pacman -S"
+else
+    printf "No valid distro found. Aborting.\n"
+    exit 1
+fi
+
+# Install packages
+printf "\nInstalling packages\n"
+$PACKAGE_MANAGER $PACKAGES
+
+# Configuring
+printf "\nMaking zsh default shell:\n"
+chsh `whoami` -s /bin/zsh
+
+printf "\nInstalling oh-my-zsh\n"
+curl -L http://install.ohmyz.sh | zsh
+
+printf "\nCreating and linking .zsh_aliases and adding tmux\n"
+printf "alias tmux='tmux -2'\n" >> $ZSH_ALIASES
+printf "if [ -f ~/.zsh_aliases ]; then\n  . ~/.zsh_aliases\nfi\n" >> "$HOME/.zshrc"
+
+printf "\nConfiguring vim and installing some plugins\n"
+mkdir -p ~/.vim/autoload ~/.vim/bundle
+curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+
+cd "$HOME/.vim/bundle"
+git clone https://github.com/shawncplus/phpcomplete.vim.git
+git clone https://github.com/ervandew/supertab.git
+git clone https://github.com/scrooloose/syntastic.git
+git clone https://github.com/joonty/vim-phpqa.git
+git clone https://github.com/evidens/vim-twig.git
+git clone https://github.com/digitaltoad/vim-jade.git
+mkdir -p node
+git clone https://github.com/moll/vim-node.git node
+git clone https://github.com/jelera/vim-javascript-syntax.git
+cd -
+
+mkdir -p "$HOME/.vim/colors"
+cp .vim/colors/sahara.vim  "$HOME/.vim/colors/sahara.vim"
+cat .vimrc >> "$HOME/.vimrc"
+
+printf "\nConfiguring git standards\n"
+git config --global user.email "herrschenck@gmail.de"
+git config --global user.name "Martin Schenck"
