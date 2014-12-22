@@ -25,7 +25,7 @@ nmap <F3> :NERDTreeToggle<CR>
 nmap <F4> :TagbarToggle<CR>
 
 " Automatically update tags when saving file
-au BufWritePost *.go silent! !ctags -R &
+au BufWritePost *.go silent! !ctags -R -f .git/tags &
 
 " Also show .md as markdown
 au BufRead,BufNewFile *.md set filetype=markdown
