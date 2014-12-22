@@ -24,6 +24,9 @@ nmap <F3> :NERDTreeToggle<CR>
 " Open and close TagBar with F4
 nmap <F4> :TagbarToggle<CR>
 
+" OmniComplete in <ctrl>+<space>
+inoremap <C-@> <C-x><C-o>
+
 " Automatically update tags when saving file
 au BufWritePost *.go silent! !ctags -R -f .git/tags &
 
